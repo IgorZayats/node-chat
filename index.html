@@ -1,0 +1,57 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<title>Чат</title>
+</head>
+
+<body>
+<div class="wrapper">
+<section>
+<ul id="messages"></ul>
+</section>
+<aside></aside>
+<form id = "publish">
+<label for="Chat"> Введіть повідомлення</label>
+<input type="text" name="message" >
+<input type="submit" value="Відправити" >
+</form>
+<form >
+<label for="userName"> Введіть імя</label>
+<input type="text" name="userName" id="userName">
+<input type="button" value="Відправити" id="btn">
+</form>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript">
+
+	publish.onsubmit =  function() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/publish",true);
+    xhr.send(JSON.stringify({message:$('#userName').val()+ '  :  ' + this.elements.message.value}));
+    this.elements.message.value = '';
+    return false;
+   };
+subscribe();
+
+function subscribe(){
+	var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/subscribe",true);
+    xhr.onload = function(){
+    	var li = document.createElement('li');
+    	li.textContent = this.responseText;
+    	messages.appendChild(li);
+    	subscribe();
+    };
+    xhr.onerror = xhr.onabort = function () {
+    	setTimeout(subscribe, 500 );
+    };
+    xhr.send('');
+
+}
+
+</script>
+
+</body>
+</html>
